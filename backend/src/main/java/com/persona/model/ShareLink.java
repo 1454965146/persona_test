@@ -24,6 +24,10 @@ public class ShareLink {
     @Column(name = "relationship_type", length = 20)
     private String relationshipType;
 
+    /** 是否允许被邀请者查看双人对比结果；默认仅邀请者可见 */
+    @Column(name = "visible_to_invitee", nullable = false)
+    private Boolean visibleToInvitee = Boolean.FALSE;
+
     /** 被邀请人的 report，完测后回填 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invitee_report_id")
@@ -53,6 +57,8 @@ public class ShareLink {
     public void setInviterName(String inviterName) { this.inviterName = inviterName; }
     public String getRelationshipType() { return relationshipType; }
     public void setRelationshipType(String relationshipType) { this.relationshipType = relationshipType; }
+    public Boolean getVisibleToInvitee() { return visibleToInvitee; }
+    public void setVisibleToInvitee(Boolean visibleToInvitee) { this.visibleToInvitee = visibleToInvitee; }
     public Report getInviteeReport() { return inviteeReport; }
     public void setInviteeReport(Report inviteeReport) { this.inviteeReport = inviteeReport; }
     public String getStatus() { return status; }

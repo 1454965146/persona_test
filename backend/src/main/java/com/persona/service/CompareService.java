@@ -7,9 +7,11 @@ import com.persona.ai.FallbackReportService;
 import com.persona.event.ComparisonRetryEvent;
 import com.persona.model.Comparison;
 import com.persona.model.Report;
+import com.persona.model.ShareLink;
 import com.persona.model.User;
 import com.persona.repository.ComparisonRepository;
 import com.persona.repository.ReportRepository;
+import com.persona.repository.ShareLinkRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +28,19 @@ public class CompareService {
     private static final Logger log = LoggerFactory.getLogger(CompareService.class);
     private final ReportRepository reportRepository;
     private final ComparisonRepository comparisonRepository;
+    private final ShareLinkRepository shareLinkRepository;
     private final AiService aiService;
     private final FallbackReportService fallback;
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher eventPublisher;
 
     public CompareService(ReportRepository reportRepository, ComparisonRepository comparisonRepository,
-                          AiService aiService, FallbackReportService fallback, ObjectMapper objectMapper,
+                          ShareLinkRepository shareLinkRepository, AiService aiService,
+                          FallbackReportService fallback, ObjectMapper objectMapper,
                           ApplicationEventPublisher eventPublisher) {
         this.reportRepository = reportRepository;
         this.comparisonRepository = comparisonRepository;
+        this.shareLinkRepository = shareLinkRepository;
         this.aiService = aiService;
         this.fallback = fallback;
         this.objectMapper = objectMapper;
@@ -136,28 +141,51 @@ public class CompareService {
     }
 
     private Map<String, Object> comparisonView(Comparison c) {
+        return comparisonView(c, true);
+    }
+
+    private Map<String, Object> comparisonView(Comparison c, boolean exposeRelationshipType) {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("comparisonId", c.getId());
         result.put("nameA", c.getNameA());
         result.put("nameB", c.getNameB());
         result.put("typeA", c.getReportA().getPersonalityType());
         result.put("typeB", c.getReportB().getPersonalityType());
-        result.put("relationshipType", c.getRelationshipType());
+        if (exposeRelationshipType) {
+            result.put("relationshipType", c.getRelationshipType());
+        }
         result.put("reportCodeA", c.getReportA().getReportCode());
         result.put("reportCodeB", c.getReportB().getReportCode());
         result.put("status", c.getStatus());
         result.put("errorMessage", c.getErrorMessage());
         result.put("content", c.getAnalysisContent());
+        result.put("scoresA", parseScores(c.getReportA().getDimensionScoresJson()));
+        result.put("scoresB", parseScores(c.getReportB().getDimensionScoresJson()));
         return result;
     }
 
     public Map<String, Object> getComparison(Long comparisonId, User currentUser) {
         Comparison c = comparisonRepository.findById(comparisonId)
                 .orElseThrow(() -> new RuntimeException("对比记录不存在"));
-        if (c.getOwnerUser() == null || !c.getOwnerUser().getId().equals(currentUser.getId())) {
+        boolean isOwner = c.getOwnerUser() != null
+                && c.getOwnerUser().getId().equals(currentUser.getId());
+        boolean isInvitee = c.getReportB() != null
+                && c.getReportB().getUser() != null
+                && c.getReportB().getUser().getId().equals(currentUser.getId());
+        if (!isOwner && isInvitee) {
+            ShareLink link = shareLinkRepository
+                    .findFirstByInviterReportIdAndInviteeReportIdAndRelationshipType(
+                            c.getReportA().getId(),
+                            c.getReportB().getId(),
+                            c.getRelationshipType())
+                    .orElse(null);
+            if (link == null || !Boolean.TRUE.equals(link.getVisibleToInvitee())) {
+                throw new RuntimeException("无权访问该对比结果");
+            }
+        } else if (!isOwner) {
             throw new RuntimeException("无权访问该对比结果");
         }
-        return comparisonView(c);
+        return comparisonView(c, isOwner);
     }
 
     @Transactional

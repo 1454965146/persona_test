@@ -16,6 +16,8 @@ public interface ShareLinkRepository extends JpaRepository<ShareLink, Long> {
     List<ShareLink> findByInviteeReportId(Long reportId);
     List<ShareLink> findByInviterReportIdIn(List<Long> reportIds);
     List<ShareLink> findByInviteeReportIdIn(List<Long> reportIds);
+    Optional<ShareLink> findFirstByInviterReportIdAndInviteeReportIdAndRelationshipType(
+            Long inviterReportId, Long inviteeReportId, String relationshipType);
 
     @Modifying
     @Query("update ShareLink s set s.status = 'EXPIRED' where s.status = 'ACTIVE' and s.expiresAt < :now")

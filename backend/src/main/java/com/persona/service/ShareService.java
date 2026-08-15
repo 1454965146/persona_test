@@ -38,7 +38,8 @@ public class ShareService {
     }
 
     @Transactional
-    public Map<String, Object> createShare(String reportCode, String relationshipType, User currentUser) {
+    public Map<String, Object> createShare(String reportCode, String relationshipType,
+                                           boolean allowInviteeView, User currentUser) {
         Report report = reportRepository.findByReportCode(reportCode)
                 .orElseThrow(() -> new RuntimeException("报告不存在"));
         if (report.getUser() == null || !report.getUser().getId().equals(currentUser.getId())) {
@@ -50,6 +51,7 @@ public class ShareService {
         link.setInviterReport(report);
         link.setInviterName(report.getNickname());
         link.setRelationshipType(relationshipType);
+        link.setVisibleToInvitee(allowInviteeView);
         link.setStatus("ACTIVE");
         link.setExpiresAt(LocalDateTime.now().plusDays(expireDays));
         link = shareLinkRepository.save(link);
@@ -58,6 +60,7 @@ public class ShareService {
         result.put("inviterName", link.getInviterName());
         result.put("relationshipType", relationshipType);
         result.put("relationshipLabel", relLabel(relationshipType));
+        result.put("allowInviteeView", allowInviteeView);
         result.put("expiresAt", link.getExpiresAt().toString());
         return result;
     }
@@ -149,6 +152,7 @@ public class ShareService {
         if ("inviter".equals(role)) {
             item.put("relationshipType", l.getRelationshipType());
             item.put("relationshipLabel", relLabel(l.getRelationshipType()));
+            item.put("allowInviteeView", Boolean.TRUE.equals(l.getVisibleToInvitee()));
         }
         item.put("inviterName", l.getInviterName()); item.put("inviterType", l.getInviterReport().getPersonalityType());
         item.put("inviterReportCode", l.getInviterReport().getReportCode()); item.put("status", l.getStatus());
@@ -156,9 +160,12 @@ public class ShareService {
             item.put("inviteeName", l.getInviteeReport().getNickname());
             item.put("inviteeType", l.getInviteeReport().getPersonalityType());
             item.put("inviteeReportCode", l.getInviteeReport().getReportCode());
-            List<Comparison> comps = comparisonRepository.findByReportAIdOrReportBId(l.getInviterReport().getId(), l.getInviteeReport().getId());
-            if (!comps.isEmpty()) item.put("comparisonId", comps.get(0).getId());
-            if (!comps.isEmpty()) item.put("comparisonStatus", comps.get(0).getStatus());
+            if ("inviter".equals(role) || Boolean.TRUE.equals(l.getVisibleToInvitee())) {
+                List<Comparison> comps = comparisonRepository.findByReportAIdOrReportBId(
+                        l.getInviterReport().getId(), l.getInviteeReport().getId());
+                if (!comps.isEmpty()) item.put("comparisonId", comps.get(0).getId());
+                if (!comps.isEmpty()) item.put("comparisonStatus", comps.get(0).getStatus());
+            }
         }
         return item;
     }

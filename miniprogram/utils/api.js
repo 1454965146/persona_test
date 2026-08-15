@@ -47,7 +47,13 @@ module.exports = {
   submitAnswers: function(answers) { return request("POST", "/api/test/submit", { answers: answers }); },
   generateReport: function(sessionCode, nickname) { return request("POST", "/api/report/generate", { sessionCode: sessionCode, nickname: nickname }); },
   getReport: function(reportCode) { return request("GET", "/api/report/" + reportCode); },
-  createShare: function(reportCode, relationshipType) { return request("POST", "/api/share/create", { reportCode: reportCode, relationshipType: relationshipType }); },
+  createShare: function(reportCode, relationshipType, allowInviteeView) {
+    return request("POST", "/api/share/create", {
+      reportCode: reportCode,
+      relationshipType: relationshipType,
+      allowInviteeView: !!allowInviteeView
+    });
+  },
   getShareInfo: function(shareCode) { return request("GET", "/api/share/" + shareCode); },
   bindShareInvitee: function(shareCode, reportCode) { return request("POST", "/api/share/" + shareCode + "/bind", { reportCode: reportCode }); },
   generateComparison: function(reportCodeA, reportCodeB, relationshipType) { return request("POST", "/api/compare/generate", { reportCodeA: reportCodeA, reportCodeB: reportCodeB, relationshipType: relationshipType }); },

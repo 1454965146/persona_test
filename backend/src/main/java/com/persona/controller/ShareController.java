@@ -24,7 +24,11 @@ public class ShareController {
     @PostMapping("/create")
     public ApiResponse<?> createShare(@Valid @RequestBody ShareCreateRequest r) {
         User user = authService.requireCurrentUser();
-        return ApiResponse.success(shareService.createShare(r.getReportCode(), r.getRelationshipType(), user));
+        return ApiResponse.success(shareService.createShare(
+                r.getReportCode(),
+                r.getRelationshipType(),
+                Boolean.TRUE.equals(r.getAllowInviteeView()),
+                user));
     }
     @GetMapping("/{shareCode}")
     public ApiResponse<?> getShareInfo(@PathVariable String shareCode) {

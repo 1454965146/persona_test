@@ -52,6 +52,13 @@
         <text class="rel-label">{{item.label}}</text>
       </view>
     </view>
+    <view class="privacy-row">
+      <view class="privacy-copy">
+        <text class="privacy-title">允许对方查看对比结果</text>
+        <text class="privacy-desc">开启后，被邀请者完成测试也能查看双人关系分析</text>
+      </view>
+      <switch checked="{{allowInviteeView}}" bindchange="toggleInviteeView" color="#a29bfe"/>
+    </view>
     <button class="btn-primary" bindtap="createShare">生成邀请码</button>
     <button class="btn-cancel" bindtap="hideSharePicker">取消</button>
   </view>
@@ -63,6 +70,8 @@
     <text class="result-title">邀请码已生成</text>
     <view class="code-display"><text class="code-text">{{shareResult.shareCode}}</text></view>
     <text class="code-hint">有效期至 {{shareResult.expiresAt}}</text>
+    <text class="code-hint" wx:if="{{shareResult.allowInviteeView}}">对方完成测试后可查看双人对比结果</text>
+    <text class="code-hint" wx:else>双人对比结果暂时仅你自己可见</text>
     <view class="result-actions">
       <button class="btn-outline-sm" bindtap="copyCode">复制</button>
       <button class="btn-primary-sm" open-type="share">微信分享</button>

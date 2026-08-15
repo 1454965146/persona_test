@@ -68,14 +68,17 @@ public class HistoryService {
         if ("inviter".equals(role)) {
             item.put("relationshipType", link.getRelationshipType());
             item.put("relationshipLabel", relationshipLabel(link.getRelationshipType()));
+            item.put("allowInviteeView", Boolean.TRUE.equals(link.getVisibleToInvitee()));
         }
         if (link.getInviteeReport() != null) {
             item.put("inviteeName", link.getInviteeReport().getNickname());
             item.put("inviteeType", link.getInviteeReport().getPersonalityType());
-            Comparison comparison = findComparison(link);
-            if (comparison != null) {
-                item.put("comparisonId", comparison.getId());
-                item.put("comparisonStatus", comparison.getStatus());
+            if ("inviter".equals(role) || Boolean.TRUE.equals(link.getVisibleToInvitee())) {
+                Comparison comparison = findComparison(link);
+                if (comparison != null) {
+                    item.put("comparisonId", comparison.getId());
+                    item.put("comparisonStatus", comparison.getStatus());
+                }
             }
         }
         return item;

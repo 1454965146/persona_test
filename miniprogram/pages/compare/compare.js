@@ -96,9 +96,15 @@ Page({
       nameB: r.nameB,
       typeA: r.typeA,
       typeB: r.typeB,
-      compareHtml: h
+      compareHtml: h,
+      scoresA: r.scoresA || null,
+      scoresB: r.scoresB || null
     });
-    this.loadDimensionReports(r.reportCodeA, r.reportCodeB);
+    if (r.scoresA && r.scoresB) {
+      this.buildDimCompare(r.scoresA, r.scoresB);
+    } else {
+      this.loadDimensionReports(r.reportCodeA, r.reportCodeB);
+    }
   },
 
   loadDimensionReports: function(reportCodeA, reportCodeB) {

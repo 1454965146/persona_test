@@ -33,7 +33,11 @@
       <text class="compare-role">{{link.myRole === 'inviter' ? '我邀请了' : '来自'}}</text>
       <text class="compare-name">{{link.myRole === 'inviter' ? (link.inviteeName || '待完成') : link.inviterName}}</text>
       <text class="compare-label" wx:if="{{link.relationshipLabel}}">{{link.relationshipLabel}}</text>
+      <text class="compare-label" wx:if="{{link.myRole === 'inviter' && link.comparisonId}}">{{link.allowInviteeView ? '已开放' : '仅自己可见'}}</text>
       <button wx:if="{{link.myRole === 'inviter' && link.comparisonId}}" class="btn-ghost" bindtap="openCompare" data-id="{{link.comparisonId}}" size="mini">
+        {{link.comparisonStatus === 'PENDING' || link.comparisonStatus === 'PROCESSING' ? '生成中' : '查看对比'}}
+      </button>
+      <button wx:elif="{{link.myRole === 'invitee' && link.comparisonId}}" class="btn-ghost" bindtap="openCompare" data-id="{{link.comparisonId}}" size="mini">
         {{link.comparisonStatus === 'PENDING' || link.comparisonStatus === 'PROCESSING' ? '生成中' : '查看对比'}}
       </button>
       <text wx:elif="{{link.myRole === 'inviter'}}" class="compare-pending">等待完成</text>
