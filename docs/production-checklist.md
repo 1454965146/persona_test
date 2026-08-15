@@ -23,7 +23,7 @@
 - [x] 数据库密码、AI Key、微信密钥全部改为环境变量注入。
 - [x] 密码使用 PBKDF2 加盐哈希。
 - [x] Dockerfile 不再硬编码默认密码。
-- [ ] 引入 Flyway/Liquibase 管理数据库迁移。
+- [x] 引入 Flyway 管理数据库迁移，并提供现有数据库 baseline 策略。
 - [ ] 为 `report_code`、`share_code`、`session_code` 增加索引并检查唯一约束。
 - [ ] 增加审计日志和敏感操作监控。
 
@@ -35,3 +35,11 @@
 - [x] 登录失效时前端统一清理状态并跳回首页。
 - [ ] 清理本地残留的 ECharts 目录和 `package-lock` 中旧依赖。
 - [ ] 增加弱网、AI 超时、分享链接过期等异常状态的可视化验证。
+
+## 数据库迁移
+
+- [x] `flyway-core` 和 `flyway-mysql` 已加入依赖。
+- [x] `V1__init_schema.sql` 定义全新数据库完整 schema。
+- [x] 开发环境使用 `baseline-on-migrate=true` 兼容现有数据库。
+- [x] 生产 profile 使用 `ddl-auto: validate`，后续 schema 变更由 Flyway 控制。
+- [ ] 发布前在隔离数据库验证 `V1__init_schema.sql` 和 Hibernate 实体完全匹配。

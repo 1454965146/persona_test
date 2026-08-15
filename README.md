@@ -63,3 +63,22 @@ $env:WECHAT_MOCK_ENABLED="false"
 cd backend
 mvn test
 ```
+
+## 数据库迁移
+
+项目使用 Flyway 管理数据库结构，迁移脚本位于：
+
+```text
+backend/src/main/resources/db/migration
+```
+
+现有数据库首次接入时会自动建立 `flyway_schema_history` 并标记 baseline，不会删除已有数据。后续表结构变更按 `V2__xxx.sql`、`V3__xxx.sql` 顺序新增即可。
+
+生产环境启动前应使用：
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE="prod"
+mvn spring-boot:run
+```
+
+生产 profile 会将 Hibernate 设为 `ddl-auto: validate`，由 Flyway 负责 schema 演进。
