@@ -1,0 +1,21 @@
+<view class="container">
+  <view class="share-hero">
+    <view class="share-mark">
+      <text class="share-mark-text">{{shareInfo ? shareInfo.inviterName[0] : '?'}}</text>
+    </view>
+    <text class="share-title" wx:if="{{shareInfo}}">{{shareInfo.inviterName}} 邀请你</text>
+    <text class="share-subtitle" wx:if="{{shareInfo}}">一起完成一次性格测试</text>
+  </view>
+
+  <view class="error-card" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <view class="input-group">
+    <text class="input-label">你的昵称</text>
+    <input class="input-field" placeholder="请输入昵称" value="{{nickname}}" bindinput="onNicknameInput" maxlength="10" placeholder-class="input-placeholder"/>
+  </view>
+
+  <button class="btn-primary" bindtap="startTest" style="width:100%">开始测试</button>
+  <text class="hint-text">约 5-8 分钟，完成后将生成你们的关系分析</text>
+</view>

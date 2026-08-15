@@ -1,0 +1,8 @@
+.match-ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+.match-ring-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.match-ring-percent { font-size: 56rpx; font-weight: 800; color: #c9bdff; line-height: 1; }
+.match-ring-label { font-size: 22rpx; color: #a8a8b8; margin-top: 8rpx; letter-spacing: 2rpx; }

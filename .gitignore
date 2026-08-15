@@ -1,0 +1,28 @@
+# Local IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local Codex/skill workspace
+.agents/
+.codex/
+
+# Backend build and logs
+backend/target/
+backend/logs/
+backend/app.log
+*.log
+
+# Frontend generated dependencies
+miniprogram/node_modules/
+miniprogram/miniprogram_npm/
+
+# Local secrets and private WeChat developer config
+.env
+backend/.env
+miniprogram/project.private.config.json
+
+# Test and coverage output
+coverage/
+*.lcov

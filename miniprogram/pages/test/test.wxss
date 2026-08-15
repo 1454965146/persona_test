@@ -1,0 +1,22 @@
+/* Error */
+.error-state{text-align:center;padding:120rpx 32rpx}
+.error-icon{width:80rpx;height:80rpx;margin:0 auto 24rpx;border-radius:50%;
+  background:rgba(255,107,107,0.1);border:2rpx solid rgba(255,107,107,0.3);
+  display:flex;align-items:center;justify-content:center}
+.error-icon-text{font-size:36rpx;font-weight:700;color:#ff6b6b}
+.error-title{display:block;font-size:30rpx;font-weight:600;color:#f0f0f5;margin-bottom:8rpx}
+.error-desc{display:block;font-size:26rpx;color:#a8a8b8}
+
+/* Skeleton */
+.skeleton-state{padding:24rpx 0}
+
+/* Navigation */
+.nav{display:flex;justify-content:space-between;margin-top:40rpx;gap:24rpx}
+.nav button{flex:1;margin:0}
+
+/* Overlay */
+.overlay{position:fixed;inset:0;background:rgba(15,15,26,0.96);
+  display:flex;align-items:center;justify-content:center;z-index:100}
+.overlay-content{text-align:center}
+.overlay-title{display:block;font-size:32rpx;font-weight:600;color:#f0f0f5;margin-top:24rpx}
+.overlay-desc{display:block;font-size:26rpx;color:#a8a8b8;margin-top:12rpx}

@@ -1,0 +1,7 @@
+<view class="match-ring-wrap" style="width:{{size}}rpx;height:{{size}}rpx">
+  <canvas type="2d" id="matchCanvas" style="width:{{size}}rpx;height:{{size}}rpx"></canvas>
+  <view class="match-ring-center">
+    <text class="match-ring-percent">{{percent}}%</text>
+    <text class="match-ring-label">匹配度</text>
+  </view>
+</view>

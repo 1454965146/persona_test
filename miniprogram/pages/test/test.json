@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "progress-bar": "/components/progress-bar/progress-bar",
+    "question-card": "/components/question-card/question-card"
+  }
+}

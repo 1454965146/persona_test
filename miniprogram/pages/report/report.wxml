@@ -1,0 +1,71 @@
+<view class="container">
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-text">AI 正在分析你的性格本色...</text>
+  </view>
+
+  <view class="report-body" wx:else>
+    <view class="hero-card">
+      <view class="type-ring"><text class="type-badge">{{personalityType}}</text></view>
+      <text class="hero-name">{{nickname}}</text>
+      <text class="hero-subtitle">你的性格本色已揭晓</text>
+    </view>
+
+    <view class="section radar-section">
+      <text class="section-title"><text class="section-marker"></text>维度雷达图</text>
+      <radar-chart scores="{{scoresObj}}" labels="{{['外向/内向','感觉/直觉','思考/情感','判断/感知','开放度']}}" size="340"></radar-chart>
+    </view>
+
+    <view class="section">
+      <text class="section-title"><text class="section-marker"></text>维度得分</text>
+      <view class="dim-cards">
+        <view class="dim-card" wx:for="{{dimList}}" wx:key="key">
+          <view class="dim-card-header">
+            <text class="dim-card-label">{{item.key}}</text>
+            <text class="dim-card-score">{{item.val}}<text class="dim-card-unit">/5</text></text>
+          </view>
+          <view class="dim-card-bar-wrap">
+            <view class="dim-card-bar" style="width: {{item.pct}}%;background: {{item.pct > 60 ? '#a29bfe' : item.pct > 40 ? '#6c5ce7' : '#4a3f8a'}}"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title"><text class="section-marker"></text>AI 深度分析</text>
+      <view class="report-card"><rich-text nodes="{{reportHtml}}"></rich-text></view>
+    </view>
+
+    <view class="actions">
+      <button class="btn-primary share-btn" bindtap="showSharePicker">邀请朋友测试</button>
+    </view>
+  </view>
+</view>
+
+<view class="share-mask" wx:if="{{showShare}}" bindtap="hideSharePicker">
+  <view class="share-sheet" catchtap="noop">
+    <view class="sheet-handle"></view>
+    <text class="share-title">你想测什么关系？</text>
+    <view class="rel-list">
+      <view class="rel-item {{selectedRel === item.value ? 'active' : ''}}" wx:for="{{relTypes}}" wx:key="value" data-value="{{item.value}}" bindtap="selectRel">
+        <view class="rel-icon"><text class="rel-icon-text">{{item.label[0]}}</text></view>
+        <text class="rel-label">{{item.label}}</text>
+      </view>
+    </view>
+    <button class="btn-primary" bindtap="createShare">生成邀请码</button>
+    <button class="btn-cancel" bindtap="hideSharePicker">取消</button>
+  </view>
+</view>
+
+<view class="share-mask" wx:if="{{shareResult}}" bindtap="hideShareResult">
+  <view class="share-sheet result-sheet" catchtap="noop">
+    <view class="sheet-handle"></view>
+    <text class="result-title">邀请码已生成</text>
+    <view class="code-display"><text class="code-text">{{shareResult.shareCode}}</text></view>
+    <text class="code-hint">有效期至 {{shareResult.expiresAt}}</text>
+    <view class="result-actions">
+      <button class="btn-outline-sm" bindtap="copyCode">复制</button>
+      <button class="btn-primary-sm" open-type="share">微信分享</button>
+    </view>
+  </view>
+</view>

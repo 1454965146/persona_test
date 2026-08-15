@@ -1,0 +1,41 @@
+<view class="container">
+  <!-- Error state -->
+  <view class="error-state" wx:if="{{loadError}}">
+    <view class="error-icon">
+      <text class="error-icon-text">!</text>
+    </view>
+    <text class="error-title">题库加载失败</text>
+    <text class="error-desc">请检查网络连接后重试</text>
+    <button class="btn-outline" bindtap="retryLoad" style="margin-top:32rpx">重新加载</button>
+  </view>
+
+  <!-- Skeleton loading -->
+  <view class="skeleton-state" wx:elif="{{questions.length === 0}}">
+    <view class="skeleton" style="height:16rpx;width:100%;margin-bottom:32rpx"></view>
+    <view class="skeleton" style="height:16rpx;width:60%;margin-bottom:40rpx"></view>
+    <view class="skeleton" style="height:320rpx;border-radius:20rpx;margin-bottom:32rpx"></view>
+    <view class="flex-center gap-24">
+      <view class="skeleton" style="height:88rpx;width:40%;border-radius:48rpx"></view>
+      <view class="skeleton" style="height:88rpx;width:40%;border-radius:48rpx"></view>
+    </view>
+  </view>
+
+  <!-- Active test -->
+  <block wx:else>
+    <progress-bar current="{{currentIndex + 1}}" total="{{questions.length}}" percent="{{percent}}"></progress-bar>
+    <question-card question="{{currentQuestion}}" index="{{currentIndex}}" selected="{{answers[currentQuestion.id]}}" bind:select="onAnswerSelect"></question-card>
+    <view class="nav">
+      <button class="btn-outline" bindtap="prevQuestion" disabled="{{currentIndex === 0}}">上一题</button>
+      <button class="btn-primary" bindtap="nextQuestion">{{currentIndex === questions.length - 1 ? '提交' : '下一题'}}</button>
+    </view>
+  </block>
+</view>
+
+<!-- Submission overlay -->
+<view class="overlay" wx:if="{{submitting}}">
+  <view class="overlay-content">
+    <view class="spinner"></view>
+    <text class="overlay-title">AI 正在分析</text>
+    <text class="overlay-desc">你的性格本色即将揭晓</text>
+  </view>
+</view>

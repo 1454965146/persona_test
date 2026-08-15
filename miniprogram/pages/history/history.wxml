@@ -1,0 +1,42 @@
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">测试历史</text>
+    <text class="page-subtitle">你的性格探索之旅</text>
+  </view>
+
+  <view class="empty-state" wx:if="{{!loading && reports.length === 0}}">
+    <view class="empty-icon"><text class="empty-icon-text">?</text></view>
+    <text class="empty-title">还没有测试记录</text>
+    <text class="empty-desc">完成一次性格测试后，报告将保存在这里</text>
+    <button class="btn-outline" bindtap="goTest" style="margin-top:32rpx">去测试</button>
+  </view>
+
+  <view wx:if="{{loading}}">
+    <view class="skeleton" style="height:120rpx;margin-bottom:24rpx"></view>
+    <view class="skeleton" style="height:120rpx;margin-bottom:24rpx"></view>
+  </view>
+
+  <view wx:for="{{reports}}" wx:key="reportCode" class="card mb-24">
+    <view class="history-row" bindtap="openReport" data-code="{{item.reportCode}}">
+      <view class="history-left">
+        <view class="history-avatar"><text class="history-avatar-text">{{item.nickname[0]}}</text></view>
+        <view class="history-info">
+          <text class="history-name">{{item.nickname}}</text>
+          <text class="history-type">{{item.personalityType}}</text>
+        </view>
+      </view>
+      <text class="history-arrow">→</text>
+    </view>
+
+    <view class="divider" wx:if="{{item.links.length}}" style="margin:0 0 16rpx 0"></view>
+    <view wx:for="{{item.links}}" wx:key="shareCode" wx:for-item="link" class="compare-item">
+      <text class="compare-role">{{link.myRole === 'inviter' ? '我邀请了' : '来自'}}</text>
+      <text class="compare-name">{{link.myRole === 'inviter' ? (link.inviteeName || '待完成') : link.inviterName}}</text>
+      <text class="compare-label" wx:if="{{link.relationshipLabel}}">{{link.relationshipLabel}}</text>
+      <button wx:if="{{link.myRole === 'inviter' && link.comparisonId}}" class="btn-ghost" bindtap="openCompare" data-id="{{link.comparisonId}}" size="mini">
+        {{link.comparisonStatus === 'PENDING' || link.comparisonStatus === 'PROCESSING' ? '生成中' : '查看对比'}}
+      </button>
+      <text wx:elif="{{link.myRole === 'inviter'}}" class="compare-pending">等待完成</text>
+    </view>
+  </view>
+</view>

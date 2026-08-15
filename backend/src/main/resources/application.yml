@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    default: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/persona_test?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+ai:
+  api-key: ${AI_API_KEY:sk-placeholder}
+  endpoint: ${AI_ENDPOINT:https://api.deepseek.com/v1}
+  model: ${AI_MODEL:deepseek-chat}
+  timeout-seconds: 60
+
+auth:
+  token-ttl-hours: ${AUTH_TOKEN_TTL_HOURS:168}
+  dev-login-enabled: ${AUTH_DEV_LOGIN_ENABLED:true}
+
+wechat:
+  app-id: ${WECHAT_APP_ID:}
+  app-secret: ${WECHAT_APP_SECRET:}
+  mock-enabled: ${WECHAT_MOCK_ENABLED:true}
+
+share:
+  expire-days: 7
+  code-length: 6

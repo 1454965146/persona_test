@@ -1,0 +1,58 @@
+<view class="container">
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text class="loading-text">{{loadingText}}</text>
+  </view>
+
+  <view class="error-state" wx:elif="{{errorMessage}}">
+    <view class="error-icon"><text class="error-icon-text">!</text></view>
+    <text class="error-title">暂时无法查看对比</text>
+    <text class="error-desc">{{errorMessage}}</text>
+    <button class="btn-outline" bindtap="retryComparison" wx:if="{{comparisonStatus === 'FAILED'}}" style="margin-top:32rpx">重新生成</button>
+  </view>
+
+  <view class="compare-body" wx:else>
+    <view class="vs-header">
+      <view class="vs-card"><text class="vs-type">{{typeA}}</text><text class="vs-name">{{nameA}}</text></view>
+      <view class="vs-divider"><text class="vs-text">VS</text></view>
+      <view class="vs-card"><text class="vs-type">{{typeB}}</text><text class="vs-name">{{nameB}}</text></view>
+    </view>
+
+    <view class="section" wx:if="{{scoresA}}">
+      <text class="section-title"><text class="section-marker"></text>维度对比雷达图</text>
+      <radar-chart scores="{{scoresA}}" scoresB="{{scoresB}}" labels="{{['外向/内向','感觉/直觉','思考/情感','判断/感知','开放度']}}" size="360"></radar-chart>
+      <view class="radar-legend">
+        <view class="legend-item"><view class="legend-dot" style="background:#a29bfe"></view><text>{{nameA}}</text></view>
+        <view class="legend-item"><view class="legend-dot" style="background:#fd79a8"></view><text>{{nameB}}</text></view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{dimCompare}}">
+      <text class="section-title"><text class="section-marker"></text>维度对比</text>
+      <view class="dim-compare">
+        <view class="dim-compare-row" wx:for="{{dimCompare}}" wx:key="label">
+          <text class="dim-compare-label">{{item.label}}</text>
+          <view class="dim-compare-bars">
+            <text class="dim-compare-val a">{{item.valA}}</text>
+            <view class="dim-compare-bar-wrap"><view class="dim-compare-bar a" style="width:{{item.pctA}}%;background:#a29bfe"></view></view>
+            <view class="dim-compare-bar-wrap"><view class="dim-compare-bar b" style="width:{{item.pctB}}%;background:#fd79a8"></view></view>
+            <text class="dim-compare-val b">{{item.valB}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section" wx:if="{{matchScore > 0}}">
+      <text class="section-title"><text class="section-marker"></text>匹配度</text>
+      <view class="match-card">
+        <match-ring percent="{{matchScore}}" size="240" color="#a29bfe"></match-ring>
+        <text class="match-desc">{{matchDesc}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title"><text class="section-marker"></text>AI 关系分析</text>
+      <view class="report-card"><rich-text nodes="{{compareHtml}}"></rich-text></view>
+    </view>
+  </view>
+</view>

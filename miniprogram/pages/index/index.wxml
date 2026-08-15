@@ -1,0 +1,84 @@
+<view class="container">
+  <view class="brand-area">
+    <view class="brand-mark">
+      <view class="brand-mask-left"></view>
+      <view class="brand-mask-right"></view>
+      <view class="brand-dot brand-dot-1"></view>
+      <view class="brand-dot brand-dot-2"></view>
+      <view class="brand-dot brand-dot-3"></view>
+    </view>
+    <text class="brand-title">性格本色</text>
+    <text class="brand-subtitle">探索真实的自己</text>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item"><text class="stat-value">50</text><text class="stat-label">精选题目</text></view>
+    <view class="stat-divider"></view>
+    <view class="stat-item"><text class="stat-value">5</text><text class="stat-label">性格维度</text></view>
+    <view class="stat-divider"></view>
+    <view class="stat-item"><text class="stat-value">AI</text><text class="stat-label">深度分析</text></view>
+  </view>
+
+  <view class="login-card" wx:if="{{isLoggedIn}}">
+    <text class="login-title">欢迎回来，{{nickname}}</text>
+    <text class="login-desc">你可以继续上次的测试，或开始新的测试</text>
+    <view class="input-group">
+      <text class="input-label">邀请码（选填）</text>
+      <input class="input-field invite-input" placeholder="输入好友的邀请码" value="{{inviteCode}}" bindinput="onInviteCodeInput" maxlength="10" placeholder-class="input-placeholder"/>
+      <text class="input-hint" wx:if="{{inviteInfo}}">{{inviteInfo.inviterName}} 邀请你进行测试</text>
+      <text class="input-hint error" wx:if="{{inviteError}}">{{inviteError}}</text>
+    </view>
+    <button class="btn-primary" bindtap="startTest" style="width:100%">开始测试</button>
+    <text class="hint-text">约 5-8 分钟，请按真实想法作答</text>
+  </view>
+
+  <view class="login-card" wx:else>
+    <text class="login-title">开始你的性格探索</text>
+    <text class="login-desc">登录后即可开始测试，查看历史记录</text>
+    <button class="btn-primary" bindtap="showLoginModal" style="width:100%">登录 / 注册</button>
+  </view>
+
+  <view class="footer-links">
+    <view class="history-link" bindtap="openHistory">
+      <text>查看历史记录</text>
+      <text class="history-arrow">→</text>
+    </view>
+    <view class="logout-link" bindtap="doLogout">
+      <text>{{isLoggedIn ? '退出登录' : '登录 / 注册'}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="modal-mask" wx:if="{{showLogin}}" bindtap="hideLoginModal">
+  <view class="modal-sheet" catchtap="preventBubble">
+    <text class="modal-title">{{loginMode === 'login' ? '登录' : '注册'}}</text>
+
+    <view class="input-group">
+      <text class="input-label">昵称（选填）</text>
+      <input class="input-field" placeholder="报告展示名称" value="{{loginNickname}}" bindinput="onLoginNicknameInput" maxlength="20" placeholder-class="input-placeholder"/>
+    </view>
+
+    <block wx:if="{{devLoginEnabled}}">
+      <view class="input-group">
+        <text class="input-label">账号（昵称）</text>
+        <input class="input-field" placeholder="请输入昵称" value="{{loginAccount}}" bindinput="onAccountInput" maxlength="20" placeholder-class="input-placeholder"/>
+      </view>
+
+      <view class="input-group">
+        <text class="input-label">密码</text>
+        <input class="input-field" placeholder="请输入密码" value="{{loginPassword}}" bindinput="onPasswordInput" password maxlength="20" placeholder-class="input-placeholder"/>
+      </view>
+    </block>
+
+    <text class="modal-error" wx:if="{{loginError}}">{{loginError}}</text>
+
+    <button class="btn-primary" bindtap="doWechatLogin" style="width:100%">微信一键登录</button>
+    <button class="btn-outline" wx:if="{{devLoginEnabled}}" bindtap="doLogin" style="width:100%;margin-top:16rpx">{{loginMode === 'login' ? '开发账号登录' : '开发账号注册'}}</button>
+
+    <view class="modal-switch" wx:if="{{devLoginEnabled}}" bindtap="toggleLoginMode">
+      <text>{{loginMode === 'login' ? '没有账号？点击注册' : '已有账号？点击登录'}}</text>
+    </view>
+
+    <button class="btn-cancel" bindtap="hideLoginModal">取消</button>
+  </view>
+</view>

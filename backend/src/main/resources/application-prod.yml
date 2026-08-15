@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+auth:
+  dev-login-enabled: false
+
+wechat:
+  mock-enabled: false
+
+server:
+  tomcat:
+    accesslog:
+      enabled: true
