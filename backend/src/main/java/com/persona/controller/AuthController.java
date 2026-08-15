@@ -30,8 +30,7 @@ public class AuthController {
 
     @PostMapping("/dev/register")
     public ApiResponse<?> devRegister(@RequestBody DevRegisterRequest request) {
-        return ApiResponse.success(authService.devRegister(
-                request.getUsername(), request.getPassword(), request.getNickname()));
+        return ApiResponse.success(authService.devRegister(request.getUsername(), request.getPassword()));
     }
 
     @PostMapping("/logout")

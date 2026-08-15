@@ -53,15 +53,10 @@
   <view class="modal-sheet" catchtap="preventBubble">
     <text class="modal-title">{{loginMode === 'login' ? '登录' : '注册'}}</text>
 
-    <view class="input-group">
-      <text class="input-label">昵称（选填）</text>
-      <input class="input-field" placeholder="报告展示名称" value="{{loginNickname}}" bindinput="onLoginNicknameInput" maxlength="20" placeholder-class="input-placeholder"/>
-    </view>
-
     <block wx:if="{{devLoginEnabled}}">
       <view class="input-group">
-        <text class="input-label">账号（昵称）</text>
-        <input class="input-field" placeholder="请输入昵称" value="{{loginAccount}}" bindinput="onAccountInput" maxlength="20" placeholder-class="input-placeholder"/>
+        <text class="input-label">账号</text>
+        <input class="input-field" placeholder="请输入账号" value="{{loginAccount}}" bindinput="onAccountInput" maxlength="20" placeholder-class="input-placeholder"/>
       </view>
 
       <view class="input-group">

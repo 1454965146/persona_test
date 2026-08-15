@@ -37,7 +37,7 @@ function request(method, path, data) {
 module.exports = {
   request: request,
   getPublicConfig: function() { return request("GET", "/api/config/public"); },
-  wechatLogin: function(code, nickname) { return request("POST", "/api/auth/wechat/login", { code: code, nickname: nickname }); },
+  wechatLogin: function(code) { return request("POST", "/api/auth/wechat/login", { code: code }); },
   devLogin: function(username, password) { return request("POST", "/api/auth/dev/login", { username: username, password: password }); },
   devRegister: function(username, password, nickname) { return request("POST", "/api/auth/dev/register", { username: username, password: password, nickname: nickname }); },
   logout: function() { return request("POST", "/api/auth/logout"); },

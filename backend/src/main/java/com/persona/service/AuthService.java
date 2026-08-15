@@ -87,7 +87,7 @@ public class AuthService {
     }
 
     @Transactional
-    public Map<String, Object> devRegister(String username, String password, String nickname) {
+    public Map<String, Object> devRegister(String username, String password) {
         if (!authProperties.isDevLoginEnabled()) throw new RuntimeException("开发登录已关闭");
         if (isBlank(username) || username.trim().length() < 2) throw new RuntimeException("账号至少2个字符");
         if (isBlank(password) || password.length() < 4) throw new RuntimeException("密码至少4位");
@@ -96,7 +96,7 @@ public class AuthService {
         User user = new User();
         user.setUsername(username.trim());
         user.setPasswordHash(PasswordHasher.hash(password));
-        user.setNickname(safeNickname(nickname, username.trim()));
+        user.setNickname(username.trim());
         user = userRepository.save(user);
         return buildLoginResult(user, issueToken(user));
     }

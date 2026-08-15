@@ -12,7 +12,6 @@ Page({
     loginMode: 'login',
     loginAccount: '',
     loginPassword: '',
-    loginNickname: '',
     loginError: '',
     pendingAction: null,
     devLoginEnabled: true,
@@ -53,7 +52,6 @@ Page({
   },
   onAccountInput: function(e) { this.setData({ loginAccount: e.detail.value, loginError: '' }); },
   onPasswordInput: function(e) { this.setData({ loginPassword: e.detail.value, loginError: '' }); },
-  onLoginNicknameInput: function(e) { this.setData({ loginNickname: e.detail.value, loginError: '' }); },
 
   preventBubble: function() {},
 
@@ -82,7 +80,6 @@ Page({
       loginError: '',
       loginAccount: '',
       loginPassword: '',
-      loginNickname: '',
       pendingAction: pendingAction || null
     });
   },
@@ -101,7 +98,7 @@ Page({
           return;
         }
         wx.showLoading({ title: '登录中...' });
-        api.wechatLogin(res.code, self.data.loginNickname).then(function(data) {
+        api.wechatLogin(res.code).then(function(data) {
           wx.hideLoading();
           self.finishLogin(data);
         }).catch(function(e) {
@@ -124,7 +121,7 @@ Page({
 
     wx.showLoading({ title: '登录中...' });
     if (this.data.loginMode === 'register') {
-      api.devRegister(account, password, this.data.loginNickname || account).then(function(data) {
+      api.devRegister(account, password).then(function(data) {
         wx.hideLoading();
         self.finishLogin(data);
       }).catch(function(e) { wx.hideLoading(); self.setData({ loginError: e.message }); });
@@ -132,7 +129,28 @@ Page({
       api.devLogin(account, password).then(function(data) {
         wx.hideLoading();
         self.finishLogin(data);
-      }).catch(function(e) { wx.hideLoading(); self.setData({ loginError: e.message }); });
+      }).catch(function(e) {
+        wx.hideLoading();
+        self.tryMigrateLegacyAccount(account, password);
+      });
+    }
+  },
+
+  tryMigrateLegacyAccount: function(account, password) {
+    var self = this;
+    try {
+      var legacy = wx.getStorageSync('accounts') || {};
+      if (!legacy[account] || legacy[account] !== password) {
+        self.setData({ loginError: '账号不存在' });
+        return;
+      }
+      api.devRegister(account, password).then(function(data) {
+        self.finishLogin(data);
+      }).catch(function(e) {
+        self.setData({ loginError: e.message });
+      });
+    } catch (e) {
+      self.setData({ loginError: '账号不存在' });
     }
   },
 
@@ -145,7 +163,6 @@ Page({
       showLogin: false,
       loginAccount: '',
       loginPassword: '',
-      loginNickname: '',
       loginError: '',
       pendingAction: null
     });
