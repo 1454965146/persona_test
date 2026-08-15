@@ -40,6 +40,13 @@
 
 - [x] `flyway-core` 和 `flyway-mysql` 已加入依赖。
 - [x] `V1__init_schema.sql` 定义全新数据库完整 schema。
+- [x] `V2__production_indexes_and_dedup.sql` 增加生产索引并清理历史重复对比。
 - [x] 开发环境使用 `baseline-on-migrate=true` 兼容现有数据库。
 - [x] 生产 profile 使用 `ddl-auto: validate`，后续 schema 变更由 Flyway 控制。
 - [ ] 发布前在隔离数据库验证 `V1__init_schema.sql` 和 Hibernate 实体完全匹配。
+
+## 后台维护
+
+- [x] 定时清理已撤销或已过期 Token。
+- [x] 定时将过期分享链接标记为 `EXPIRED`。
+- [x] 清理间隔通过 `MAINTENANCE_INTERVAL_MS` 配置。

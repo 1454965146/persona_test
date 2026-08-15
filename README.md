@@ -82,3 +82,11 @@ mvn spring-boot:run
 ```
 
 生产 profile 会将 Hibernate 设为 `ddl-auto: validate`，由 Flyway 负责 schema 演进。
+
+## 后台维护
+
+后端启动后会按固定间隔清理已撤销或已过期的登录 Token，并将过期分享链接标记为 `EXPIRED`。可通过环境变量调整间隔：
+
+```powershell
+$env:MAINTENANCE_INTERVAL_MS="3600000"
+```
