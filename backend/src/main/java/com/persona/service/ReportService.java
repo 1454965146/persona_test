@@ -53,10 +53,6 @@ public class ReportService {
         Map<String, Double> scores = parseScores(session.getDimensionScoresJson());
         String personalityType = DimensionUtil.computeType(scores);
 
-        String aiContent;
-        try { aiContent = aiService.generateReport(scores, safeName); }
-        catch (Exception e) { log.warn("AI生成失败，使用本地模板降级"); aiContent = fallback.generateReport(scores, safeName); }
-
         Report report = new Report();
         report.setReportCode(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
         report.setSession(session);
@@ -64,7 +60,7 @@ public class ReportService {
         report.setNickname(safeName);
         report.setPersonalityType(personalityType);
         report.setDimensionScoresJson(session.getDimensionScoresJson());
-        report.setReportContent(aiContent);
+        report.setPremiumUnlocked(false);
         report = reportRepository.save(report);
 
         Map<String, Object> result = new LinkedHashMap<>();
@@ -72,7 +68,8 @@ public class ReportService {
         result.put("nickname", safeName);
         result.put("personalityType", personalityType);
         result.put("dimensionScores", scores);
-        result.put("content", aiContent);
+        result.put("premiumUnlocked", false);
+        result.put("previewContent", buildPreview(safeName, personalityType, scores));
         return result;
     }
 
@@ -86,8 +83,49 @@ public class ReportService {
         Map<String, Object> r = new LinkedHashMap<>();
         r.put("reportCode", report.getReportCode()); r.put("nickname", report.getNickname());
         r.put("personalityType", report.getPersonalityType());
-        r.put("dimensionScores", scores); r.put("content", report.getReportContent());
+        r.put("dimensionScores", scores);
+        r.put("premiumUnlocked", Boolean.TRUE.equals(report.getPremiumUnlocked()));
+        r.put("previewContent", buildPreview(report.getNickname(), report.getPersonalityType(), scores));
+        if (Boolean.TRUE.equals(report.getPremiumUnlocked())) {
+            r.put("content", report.getReportContent());
+        } else {
+            r.put("content", null);
+        }
         return r;
+    }
+
+    @Transactional
+    public void generatePremiumReport(Report report) {
+        Map<String, Double> scores = parseScores(report.getDimensionScoresJson());
+        String aiContent;
+        try {
+            aiContent = aiService.generateReport(scores, report.getNickname());
+        } catch (Exception e) {
+            log.warn("AI生成失败，使用本地模板降级: {}", e.getMessage());
+            aiContent = fallback.generateReport(scores, report.getNickname());
+        }
+        report.setReportContent(aiContent);
+        report.setPremiumUnlocked(true);
+        reportRepository.save(report);
+    }
+
+    private String buildPreview(String nickname, String personalityType, Map<String, Double> scores) {
+        Map<String, String> labels = new LinkedHashMap<>();
+        labels.put("EI", "外向/内向");
+        labels.put("SN", "感觉/直觉");
+        labels.put("TF", "思考/情感");
+        labels.put("JP", "判断/感知");
+        labels.put("EXTRA", "开放度");
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("你当前的人格类型为 ").append(personalityType).append("。");
+        sb.append("五个核心维度的表现分别为：");
+        for (Map.Entry<String, String> entry : labels.entrySet()) {
+            Double value = scores.get(entry.getKey());
+            sb.append(entry.getValue()).append(" ").append(value == null ? "3.0" : value).append(" 分；");
+        }
+        sb.append("解锁完整报告后，可获得 AI 深度解读、优势盲区、成长建议和社交建议。");
+        return sb.toString();
     }
 
     private Map<String, Double> parseScores(String json) {

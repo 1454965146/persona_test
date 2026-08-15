@@ -34,6 +34,9 @@ public class Report {
     @Column(name = "report_content", columnDefinition = "MEDIUMTEXT")
     private String reportContent;
 
+    @Column(name = "premium_unlocked", nullable = false)
+    private Boolean premiumUnlocked = Boolean.FALSE;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -58,6 +61,8 @@ public class Report {
     public void setDimensionScoresJson(String dimensionScoresJson) { this.dimensionScoresJson = dimensionScoresJson; }
     public String getReportContent() { return reportContent; }
     public void setReportContent(String reportContent) { this.reportContent = reportContent; }
+    public Boolean getPremiumUnlocked() { return premiumUnlocked; }
+    public void setPremiumUnlocked(Boolean premiumUnlocked) { this.premiumUnlocked = premiumUnlocked; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -1,7 +1,7 @@
 <view class="container">
   <view class="loading-wrap" wx:if="{{loading}}">
     <view class="spinner"></view>
-    <text class="loading-text">AI 正在分析你的性格本色...</text>
+    <text class="loading-text">正在整理你的性格本色...</text>
   </view>
 
   <view class="report-body" wx:else>
@@ -31,7 +31,20 @@
       </view>
     </view>
 
-    <view class="section">
+    <view class="section" wx:if="{{!premiumUnlocked}}">
+      <view class="paywall-card">
+        <text class="paywall-title">解锁完整 AI 深度报告</text>
+        <text class="paywall-desc">{{previewText}}</text>
+        <view class="paywall-price-row">
+          <text class="paywall-price">¥9.9</text>
+          <text class="paywall-original">标准报告定价 ¥19.9</text>
+        </view>
+        <button class="btn-primary" bindtap="openPaySheet" style="width:100%">解锁完整报告</button>
+        <text class="paywall-footnote">基础人格类型和维度得分已免费展示</text>
+      </view>
+    </view>
+
+    <view class="section" wx:else>
       <text class="section-title"><text class="section-marker"></text>AI 深度分析</text>
       <view class="report-card"><rich-text nodes="{{reportHtml}}"></rich-text></view>
     </view>
@@ -39,6 +52,24 @@
     <view class="actions">
       <button class="btn-primary share-btn" bindtap="showSharePicker">邀请朋友测试</button>
     </view>
+  </view>
+</view>
+
+<view class="share-mask" wx:if="{{showPaySheet}}" bindtap="hidePaySheet">
+  <view class="share-sheet pay-sheet" catchtap="noop">
+    <view class="sheet-handle"></view>
+    <text class="share-title">确认支付</text>
+    <view class="pay-order-card">
+      <text class="pay-order-label">完整 AI 深度报告</text>
+      <text class="pay-order-amount">¥{{payOrder ? payOrder.amountYuan : '9.90'}}</text>
+      <text class="pay-order-provider">微信支付（当前为模拟环境）</text>
+    </view>
+    <text class="pay-error" wx:if="{{payError}}">{{payError}}</text>
+    <button class="btn-primary" bindtap="confirmMockPay" disabled="{{paying || !payOrder}}" style="width:100%">
+      {{paying ? '支付处理中...' : '模拟微信支付成功'}}
+    </button>
+    <button class="btn-cancel" bindtap="cancelMockPay" disabled="{{paying || !payOrder}}">模拟支付失败</button>
+    <button class="btn-cancel" bindtap="hidePaySheet" disabled="{{paying}}">取消</button>
   </view>
 </view>
 

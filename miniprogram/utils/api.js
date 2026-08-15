@@ -59,5 +59,8 @@ module.exports = {
   generateComparison: function(reportCodeA, reportCodeB, relationshipType) { return request("POST", "/api/compare/generate", { reportCodeA: reportCodeA, reportCodeB: reportCodeB, relationshipType: relationshipType }); },
   getLinksByReport: function(code) { return request("GET", "/api/share/by-report/" + code); },
   getComparison: function(comparisonId) { return request("GET", "/api/compare/" + comparisonId); },
-  retryComparison: function(comparisonId) { return request("POST", "/api/compare/" + comparisonId + "/retry"); }
+  retryComparison: function(comparisonId) { return request("POST", "/api/compare/" + comparisonId + "/retry"); },
+  createPaymentOrder: function(reportCode) { return request("POST", "/api/payment/order", { reportCode: reportCode }); },
+  getPaymentOrder: function(orderNo) { return request("GET", "/api/payment/order/" + orderNo); },
+  mockPaySuccess: function(orderNo) { return request("POST", "/api/payment/" + orderNo + "/mock-success"); }
 };

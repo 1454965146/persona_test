@@ -46,3 +46,7 @@ wechat:
 share:
   expire-days: 7
   code-length: 6
+
+payment:
+  report-price-cents: ${PAYMENT_REPORT_PRICE_CENTS:990}
+  mock-enabled: ${PAYMENT_MOCK_ENABLED:true}
